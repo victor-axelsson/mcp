@@ -1,0 +1,28 @@
+use_default_settings: true
+
+general:
+  instance_name: "Home SearXNG"
+  debug: false
+
+server:
+  # Replace with your Ubuntu LAN IP if Mac will call it, e.g. http://192.168.1.50:8080/
+  base_url: "http://192.168.50.81:8080/"
+  secret_key: "22e5fd8d2d5a105854cc1bb4db92537ecd6567a7ca2624fb6dc6ba997ba8f25f"
+  limiter: false          # keep false for local/MCP use
+  public_instance: false
+  image_proxy: true
+
+# Only needed if you keep the valkey service above
+valkey:
+  url: valkey://valkey:6379/0
+
+search:
+  safe_search: 0
+  autocomplete: "duckduckgo"
+  default_lang: "en"
+  formats:
+    - html
+    - json          # REQUIRED for MCP / API clients
+
+ui:
+  static_use_hash: true

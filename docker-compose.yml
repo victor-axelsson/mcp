@@ -1,0 +1,46 @@
+services:
+  searxng:
+    image: docker.io/searxng/searxng:latest
+    container_name: searxng
+    restart: unless-stopped
+    ports:
+      # LAN access from Mac → Ubuntu (change 8080 if needed)
+      - "8080:8080"
+      # Or lock to localhost only:
+      # - "127.0.0.1:8080:8080"
+    volumes:
+      - ./searxng:/etc/searxng:rw
+      - searxng-data:/var/cache/searxng
+    environment:
+      - SEARXNG_BASE_URL=http://localhost:8080/
+      # Optional: force secret via env (overrides settings if supported)
+      # - SEARXNG_SECRET=$(openssl rand -hex 32)
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Optional but recommended (limiter / some features)
+  valkey:
+    image: docker.io/valkey/valkey:8-alpine
+    container_name: searxng-valkey
+    restart: unless-stopped
+    command: valkey-server --save 30 1 --loglevel warning
+    volumes:
+      - valkey-data:/data
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "2"
+
+volumes:
+  searxng-data:
+  valkey-data:
